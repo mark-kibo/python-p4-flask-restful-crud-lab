@@ -48,6 +48,37 @@ class PlantByID(Resource):
         return make_response(jsonify(plant), 200)
 
 
+    def patch(self, id):
+        plant= Plant.query.get(id)
+
+        if not plant:
+            return make_response("plant does not exixt", 404)
+        
+
+        data = request.get_json()
+
+        for field, value in data.items():
+                if hasattr(plant, field):
+                    setattr(plant, field, value)
+
+        db.session.commit()
+        plant_dict={
+            
+        }
+        return make_response(jsonify(plant.to_dict())
+                            , 200)
+
+    def delete(self, id):
+        plant= Plant.query.get(id)
+
+        if not plant:
+            return make_response("plant does not exixt", 404)
+        
+        db.session.delete(plant)
+        db.session.commit()
+
+        return make_response("Deleted successful", 204)
+
 api.add_resource(PlantByID, '/plants/<int:id>')
 
 
